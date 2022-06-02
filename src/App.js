@@ -1,21 +1,65 @@
+import React from "react";
+import { useEffect, useState } from "react";
+
 import './App.css';
-import { useState, useEffect } from 'react';
+import searchIcon from './search.svg';
+import MovieCard from "./MovieCard";
+
+
+// API Key: 7bd92c9
+
+
+const API_URL = 'http://www.omdbapi.com?apikey=7bd92c9';
+
 
 
 const App = () => {
-  const [counter, setCounter] = useState(0);
+    const [movies, setMovies] = useState([]);
+    const [searchTerm, setSearchTerm] = useState('');
 
-  useEffect(() => {
-    alert("You've changed the counter to: "+counter)
-  }, [counter]) 
+    const searchMovies = async (title) => {
+        const response = await fetch(`${API_URL}&s=${title}`);
+        const data = await response.json();
 
-  return (
-    <div className="App">
-      <button onClick={() => setCounter((prevCounter) => prevCounter - 1) }>-</button>
-      <h1>{counter}</h1>
-      <button onClick={() => setCounter((prevCounter) => prevCounter + 1) }>+</button>
-    </div>
-  );
+        setMovies(data.Search);
+    }
+
+    useEffect(() => {
+        searchMovies('Thor');
+    }, [])
+
+    return (
+        <div className="app">
+            <h1>MovieLand</h1>
+
+            <div className="search">
+                <input 
+                    placeholder="Search for movies" 
+                    value={searchTerm} 
+                    onChange={(e) => {setSearchTerm(e.target.value)}}
+                />
+                <img 
+                    src={searchIcon} 
+                    alt="search" 
+                    onClick={() => {searchMovies(searchTerm)}}
+                />
+            </div>
+
+            {
+                movies?.length > 0 
+                ? (
+                    <div className="container">
+                        {movies.map((movie) => (<MovieCard movie={movie}/>))}
+                    </div>
+                ) : (
+                    <div className="empty">
+                        <h2>No movies found</h2>
+                    </div>
+                )
+            }
+        </div>
+    )
 }
+
 
 export default App;
