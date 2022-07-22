@@ -1,0 +1,2 @@
+clientID=780390404030-s0fkjo8pi2tj74t0m8f3us3da7qtr0pl.apps.googleusercontent.com
+clientSecret=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

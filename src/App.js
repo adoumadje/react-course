@@ -1,62 +1,27 @@
-import React from "react";
-import { useEffect, useState } from "react";
-
-import './App.css';
-import searchIcon from './search.svg';
-import MovieCard from "./MovieCard";
-
-
-// API Key: 7bd92c9
-
-
-const API_URL = 'http://www.omdbapi.com?apikey=7bd92c9';
-
+import React, { useEffect } from "react";
 
 
 const App = () => {
-    const [movies, setMovies] = useState([]);
-    const [searchTerm, setSearchTerm] = useState('');
-
-    const searchMovies = async (title) => {
-        const response = await fetch(`${API_URL}&s=${title}`);
-        const data = await response.json();
-
-        setMovies(data.Search);
+    function handleCallbackResponse(response) {
+        console.log('Encoded JWT ID Token: '+response.credential)
     }
 
     useEffect(() => {
-        searchMovies('Thor');
+        /* global google */
+        google.accounts.id.initialize({
+            client_id: '780390404030-s0fkjo8pi2tj74t0m8f3us3da7qtr0pl.apps.googleusercontent.com',
+            callback: handleCallbackResponse,
+        })
+
+        google.accounts.id.renderButton(
+            document.getElementById('signInDiv'),
+            { theme: 'outline', size: 'large' }
+        )
     }, [])
 
     return (
         <div className="app">
-            <h1>MovieLand</h1>
-
-            <div className="search">
-                <input 
-                    placeholder="Search for movies" 
-                    value={searchTerm} 
-                    onChange={(e) => {setSearchTerm(e.target.value)}}
-                />
-                <img 
-                    src={searchIcon} 
-                    alt="search" 
-                    onClick={() => {searchMovies(searchTerm)}}
-                />
-            </div>
-
-            {
-                movies?.length > 0 
-                ? (
-                    <div className="container">
-                        {movies.map((movie) => (<MovieCard movie={movie}/>))}
-                    </div>
-                ) : (
-                    <div className="empty">
-                        <h2>No movies found</h2>
-                    </div>
-                )
-            }
+            <div id='signInDiv'></div>
         </div>
     )
 }
